@@ -1,0 +1,19 @@
+#include <stdio.h>
+
+int main() {
+    int a, b, sum, checksum;
+
+    printf("Enter two 8-bit decimal values: ");
+    scanf("%d%d", &a, &b);
+
+    sum = a + b;
+
+    if (sum > 255)
+        sum = (sum & 255) + 1;
+
+    checksum = 255 - sum;
+
+    printf("Checksum = %d\n", checksum);
+
+    return 0;
+}

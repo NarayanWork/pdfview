@@ -1,0 +1,35 @@
+
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
+
+int main() {
+    int s[2];
+    char msg[100];
+
+    socketpair(AF_UNIX, SOCK_STREAM, 0, s);
+
+    if (fork() == 0) {
+        close(s[0]);
+
+        write(s[1], "Hello Server", 12);
+        read(s[1], msg, sizeof(msg));
+        printf("Client received: %s\n", msg);
+
+        close(s[1]);
+    } else {
+        close(s[1]);
+
+        read(s[0], msg, sizeof(msg));
+        printf("Server received: %s\n", msg);
+
+        write(s[0], "Hello Client", 12);
+
+        wait(NULL);
+        close(s[0]);
+    }
+
+    return 0;
+}

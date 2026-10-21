@@ -1,0 +1,52 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+int main(int argc, char *argv[]) {
+    int s, c;
+    char msg[100];
+    struct sockaddr_in addr;
+
+    s = socket(AF_INET, SOCK_STREAM, 0);
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(5000);
+
+    if (argc > 1 && strcmp(argv[1], "server") == 0) {
+        addr.sin_addr.s_addr = INADDR_ANY;
+
+        bind(s, (struct sockaddr *)&addr, sizeof(addr));
+        listen(s, 1);
+
+        printf("Waiting for client...\n");
+        c = accept(s, NULL, NULL);
+
+        int n = recv(c, msg, sizeof(msg) - 1, 0);
+        if (n > 0) {
+            msg[n] = '\0';
+            printf("Client: %s\n", msg);
+            send(c, "Message received", 16, 0);
+        }
+
+        close(c);
+    } else {
+        inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+
+        connect(s, (struct sockaddr *)&addr, sizeof(addr));
+
+        printf("Enter message: ");
+        fgets(msg, sizeof(msg), stdin);
+        send(s, msg, strlen(msg), 0);
+
+        int n = recv(s, msg, sizeof(msg) - 1, 0);
+        if (n > 0) {
+            msg[n] = '\0';
+            printf("Server: %s\n", msg);
+        }
+    }
+
+    close(s);
+    return 0;
+}

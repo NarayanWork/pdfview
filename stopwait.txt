@@ -1,0 +1,15 @@
+#include <stdio.h>
+
+int main() {
+    int i, n;
+
+    printf("Enter frames: ");
+    scanf("%d", &n);
+
+    for (i = 1; i <= n; i++) {
+        printf("Frame %d sent\n", i);
+        printf("ACK received\n");
+    }
+
+    return 0;
+}

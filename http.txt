@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+int main() {
+    int s, c;
+    struct sockaddr_in a;
+    char msg[] = "HTTP/1.1 200 OK\r\n"
+                 "Content-Length: 12\r\n"
+                 "Connection: close\r\n\r\n"
+                 "Hello World";
+
+    s = socket(AF_INET, SOCK_STREAM, 0);
+
+    a.sin_family = AF_INET;
+    a.sin_port = htons(8080);
+    a.sin_addr.s_addr = INADDR_ANY;
+
+    bind(s, (struct sockaddr *)&a, sizeof(a));
+    listen(s, 1);
+
+    printf("Waiting for browser...\n");
+    c = accept(s, NULL, NULL);
+
+    send(c, msg, strlen(msg), 0);
+
+    close(c);
+    close(s);
+    return 0;
+}

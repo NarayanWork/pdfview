@@ -1,0 +1,20 @@
+#include <stdio.h>
+
+int main() {
+    int d[7], i;
+
+    printf("Enter 4 data bits: ");
+    scanf("%d%d%d%d", &d[2], &d[4], &d[5], &d[6]);
+
+    d[0] = d[2] ^ d[4] ^ d[6];
+    d[1] = d[2] ^ d[5] ^ d[6];
+    d[3] = d[4] ^ d[5] ^ d[6];
+
+    printf("Hamming code: ");
+
+    for (i = 0; i < 7; i++)
+        printf("%d", d[i]);
+
+    printf("\n");
+    return 0;
+}
